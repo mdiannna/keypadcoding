@@ -5,9 +5,12 @@ typedef struct sensor_t {
 } sensorType;
 
 enum { SENSOR_TEMP,SENSOR_GAS,SENSOR_PIR,SENSOR_FS,SENZOR_US,SENSOR_TILT, SENSOR_NR_OF };
+
 #include <Keypad.h>
-void init(){
+void InitSerial(){
 Serial.begin(9600);
+}
+
 const byte ROWS = 4; //four rows
 const byte COLS = 4; //four columns
 char keys[ROWS][COLS] = {
@@ -20,14 +23,8 @@ char keys[ROWS][COLS] = {
 byte rowPins[ROWS] = {5, 4, 3, 2}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {9, 8, 7, 6}; //connect to the column pinouts of the keypad
 
-Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );}
-void keys(){
-char key = keypad.getkey();
-  
-  if (key){
-    Serial.println(key);
-  }
-}
+Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
+
 
 char KeyToChar(unsigned char key) {
 
@@ -214,20 +211,46 @@ char * SensorGetParamName(int id) {
 
 
 void setup() {
-  Serial.begin(9600);
+  InitSerial();
   InitTemperature();
   InitGS();
   InitPIR();
   InitFS();
   InitUS();
   InitT(); 
-  init();
   
 }
 
 void loop() {
-  void keys();
-  for(int i=0; i<SENSOR_NR_OF; i++) {
+  
+  int i = 0;
+
+  char key = keypad.getKey();
+
+
+
+  if(key=='1') {
+    i = SENSOR_TEMP;
+  }
+  if(key=='2') {
+    i = SENSOR_GAS;
+  }
+  if(key=='3') {
+    i = SENSOR_PIR;
+  }
+  if(key=='4') {
+    i = SENSOR_FS;
+  }
+    if(key=='5') {
+    i = SENZOR_US;
+  }
+
+  if(key=='6') {
+    i = SENSOR_TILT;
+  }
+
+
+  // for(int i=0; i<SENSOR_NR_OF; i++) {
     char * paramName = SensorGetParamName(i);
     Serial.print(paramName);
     Serial.print(": ");
@@ -240,7 +263,7 @@ void loop() {
     Serial.print(unit);
     Serial.print(" , ");
     Serial.println();
-  }
+  // }
   Serial.println();
   delay(2000);
   
